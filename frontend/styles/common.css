@@ -1,0 +1,110 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-family: "Museo Sans Cyrl", sans-serif;
+    color: #333333;
+}
+a{
+    color: #6933DC;
+}
+@font-face {
+    src: url("/fonts/MuseoSansCyrl-500.ttf");
+    font-family: "Museo Sans Cyrl";
+}
+@font-face {
+    src: url("/fonts/MuseoSansCyrl-700.ttf");
+    font-family: "Museo Sans Cyrl Bold";
+}
+.header{
+    padding: 42px 0 40px 0;
+    border-bottom: 1px solid #dcdcf3;
+}
+.container{
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.button{
+    padding: 14px 35px;
+    color: #fff;
+    font-size: 17px;
+    line-height: 20px;
+    background: #6933DC;
+    border-radius: 6px;
+    border: 0;
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+}
+a.button{
+    display: inline-block;
+}
+
+.button:hover{
+    background: #4d24a5;
+}
+.button:disabled{
+    background: #e2dfe7;
+    cursor: not-allowed;
+}
+.button-transparent{
+    background: transparent;
+    border: 1px solid #6933DC;
+    color: #6933DC;
+}
+.button-transparent:hover{
+    color: #ffffff;
+}
+.button-transparent:disabled{
+    background: transparent;
+    border: 1px solid #e2dfe7;
+    color: #e2dfe7;
+}
+
+
+.footer{
+    text-align: center;
+    padding: 40px 0 40px 0;
+    font-size: 13px;
+    line-height: 16px;
+    color: #DCDCF3;
+}
+.common-title{
+    font-family: "Museo Sans Cyrl Bold",sans-serif;
+    font-size: 48px;
+    line-height: 58px;
+    color: #333333;
+}
+.common-title span{
+    color: #6933DC;
+}
+.big-title{
+    font-family: "Museo Sans Cyrl Bold",sans-serif;
+    font-size: 54px;
+    line-height: 65px;
+}
+.big-title span{
+    color: #6933DC;
+    margin-bottom: 60px;
+}
+.question-title{
+    font-family: "Museo Sans Cyrl Bold", sans-serif;
+    font-size: 36px;
+    line-height: 43px;
+}
+.question-title span{
+    color: #6933DC;
+}
+.question-options{
+    margin-top: 58px;
+    min-height: 344px;
+}
+.question-option{
+    font-size: 20px;
+    line-height: 24px;
+    margin-bottom: 20px;
+    display: flex;
+}
+
+.question-option label{
+    cursor: pointer;
+}

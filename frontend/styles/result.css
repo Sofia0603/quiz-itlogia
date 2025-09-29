@@ -1,0 +1,52 @@
+.result{
+    padding-top: 100px;
+    padding-bottom: 71px;
+    text-align: center;
+}
+
+.result .container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+.result-image{
+    position: absolute;
+    top: 225px;
+    z-index: -1;
+}
+.result-title{
+    max-width: 588px;
+    margin-bottom: 60px;
+}
+.result-score{
+    background-image: url("/images/result.png");
+    background-size: cover;
+    background-position: center;
+    width: 480px;
+    height: 388px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 158px;
+    font-family: "Museo Sans Cyrl Bold",sans-serif;
+    line-height: 190px;
+    color: #FFFFFF;
+}
+.result-link{
+    align-self: end;
+    justify-self: flex-end;
+    margin-top: 80px;
+    font-weight: 400;
+    font-size: 17px;
+
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+.result-link:hover{
+    color: #300d7e;
+}
