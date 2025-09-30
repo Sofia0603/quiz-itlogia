@@ -10,6 +10,14 @@ export class Form  {
         this.processElement = null;
         this.page = page;
 
+        const accessToken = localStorage.getItem(Auth.accessTokenKey);
+        if(accessToken){
+            location.href = '#/choice';
+            return
+        }
+
+
+
         this.fields = [
 
             {
@@ -91,45 +99,52 @@ export class Form  {
 
         async processForm(){
             if(this.validateForm()){
+
+                const email =  this.fields.find(item => item.name === 'email').element.value;
+                const password =  this.fields.find(item => item.name === 'password').element.value;
+
                 if(this.page === 'signup'){
                     try {
                        const result = await CustomHttp.request(config.host + '/signup','POST',
                           {
                               name: this.fields.find(item => item.name === 'name').element.value,
                               lastName: this.fields.find(item => item.name === 'lastName').element.value,
-                              email: this.fields.find(item => item.name === 'email').element.value,
-                              password: this.fields.find(item => item.name === 'password').element.value,
+                              email: email,
+                              password: password,
                           })
                         if(result){
                             if(result.error || !result.user){
                                 throw new Error(result.message);
                             }
-                            location.href = '#/choice'
                         }
                     } catch (error) {
-                        console.log(error);
+                        return console.log(error);
                     }
-                } else {
-                    try {
-                        const result = await CustomHttp.request(config.host + '/login','POST',
-                          {
-                              email: this.fields.find(item => item.name === 'email').element.value,
-                              password: this.fields.find(item => item.name === 'password').element.value,
-                          })
-                        if(result){
-                            if(result.error || !result.accessToken || !result.refreshToken || !result.fullName || !result.userId){
-                                throw new Error(result.message);
-                            }
-                            Auth.setToken(result.accessToken, result.refreshToken);
+                }
 
-                            location.href = '#/choice'
+                try {
+                    const result = await CustomHttp.request(config.host + '/login','POST',
+                      {
+                          email: email,
+                          password: password,
+                      })
+                    if(result){
+                        if(result.error || !result.accessToken || !result.refreshToken || !result.fullName || !result.userId){
+                            throw new Error(result.message);
                         }
-                    } catch (error) {
-                        console.log(error);
+                        Auth.setToken(result.accessToken, result.refreshToken);
+                        Auth.setUserInfo({
+                            fullName: result.fullName,
+                            userId: result.userId,
+                        })
+                        location.href = '#/choice'
                     }
+                } catch (error) {
+                    console.log(error);
                 }
             }
         }
+
     }
 
 
