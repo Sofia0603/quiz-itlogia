@@ -7,14 +7,12 @@ export class Result {
      constructor() {
 
          this.routeParams = UrlManager.getQueryParams();
-
+         this.answersLink = document.querySelector('.result-link');
          this.init();
-         // const answersLink = document.querySelector('.result-link');
 
 
-         //
-         //
-         //
+
+
          // if (this.routeParams.id && this.routeParams.answers && this.routeParams.name && this.routeParams.lastName && this.routeParams.email) {
          //     answersLink.href = `#/answers?id=${this.routeParams.id}&answers=${this.routeParams.answers}&name=${encodeURIComponent(this.routeParams.name)}&lastName=${encodeURIComponent(this.routeParams.lastName)}&email=${encodeURIComponent(this.routeParams.email)}`;
          // } else {
@@ -38,6 +36,11 @@ export class Result {
                throw new Error(result.error)
              }
              document.getElementById('result-score').innerText = result.score + '/' + result.total;
+             this.answersLink.onclick = function(event) {
+               event.preventDefault();
+               event.stopPropagation();
+               location.href = '#/answers';
+             }
              return
            }
          } catch (error){
@@ -45,4 +48,5 @@ export class Result {
          }
        }
      }
+
  }

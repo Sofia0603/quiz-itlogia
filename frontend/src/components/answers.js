@@ -1,4 +1,7 @@
 import {UrlManager} from "../utils/url-manager.js";
+import {CustomHttp} from "../services/custom-http.js";
+import config from "../../config/config.js";
+import {Auth} from "../services/auth.js";
 
 export class Answers  {
     constructor() {
@@ -19,30 +22,33 @@ export class Answers  {
         this.chosenAnswers = answers ? answers.split(',').map(Number) : [];
         this.correctAnswers = this.getCorrectAnswers(this.routeParams.id);
 
-        if (this.routeParams.id) {
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', 'https://testologia.ru/get-quiz?id=' + this.routeParams.id, false);
-            xhr.send();
-
-            if (xhr.status === 200 && xhr.responseText) {
-                try {
-                    this.quiz = JSON.parse(xhr.responseText);
-                } catch (e) {
-                    location.href = '#/';
-                    return;
-                }
-
-                this.startQuiz();
-            } else {
-                location.href = '#/';
-            }
-        } else {
-            location.href = '#/l';
-        }
+        // this.init()
     }
 
 
-
+        // async init(testId){
+        //
+        //     const userInfo = Auth.getUserInfo();
+        //     if(!userInfo){
+        //         location.href="#/";
+        //     }
+        //     const params = new URLSearchParams(window.location.search);
+        //     const id = params.get('id');
+        //         try {
+        //             const result = await CustomHttp.request(config.host + '/tests/' + testId + '/result/details?userId=' + userInfo.userId, 'POST')
+        //
+        //             if (result) {
+        //                 if (result.error) {
+        //                     throw new Error(result.error)
+        //                 }
+        //                 this.startQuiz();
+        //
+        //             }
+        //         } catch (error) {
+        //             console.log(error);
+        //         }
+        //
+        // }
 
         startQuiz(){
             document.getElementById('pre-title').innerText = this.quiz.name;
@@ -115,19 +121,24 @@ export class Answers  {
             });
         }
 
-        getCorrectAnswers(testId) {
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', `https://testologia.ru/get-quiz-right?id=${testId}`, false);
-            xhr.send();
+        async getCorrectAnswers() {
+            const userInfo = Auth.getUserInfo();
+            if(!userInfo){
+                location.href="#/";
+            }
+            try{
+                const result = await CustomHttp.request(config.host + '/tests/' + this.testId + '/result/details?userId=' + userInfo.userId, 'GET')
 
-            if (xhr.status === 200 && xhr.responseText) {
-                try {
-                    return JSON.parse(xhr.responseText);
-                } catch (e) {
-                    return [];
+                if(result){
+                    if(result.error){
+                        throw new Error(result.error)
+                    }
+                    this.startQuiz();
+                    return
                 }
+            } catch (error){
+                console.log(error);
             }
 
-            return [];
         }
     }

@@ -66,6 +66,8 @@ export class Form  {
         this.processElement.onclick = function () {
             that.processForm()
         }
+
+
         if(this.page === 'signup'){
             this.agreeElement = document.getElementById('agree');
             this.agreeElement.onchange = function () {
@@ -136,7 +138,9 @@ export class Form  {
                         Auth.setUserInfo({
                             fullName: result.fullName,
                             userId: result.userId,
+                            email:email,
                         })
+
                         location.href = '#/choice'
                     }
                 } catch (error) {
