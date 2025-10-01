@@ -7,56 +7,82 @@ export class Answers  {
     constructor() {
         this.quiz = null;
         this.chosenAnswers = [];
-        this.name= null;
-        this.lastName= null;
-        this.email= null;
+        this.correctAnswers = []
         this.questionTitleElement= null;
         this.optionsElement= null;
-        this.correctAnswers = [];
+
+        this.userInfo = Auth.getUserInfo();
 
 
-        this.routeParams = UrlManager.getQueryParams();
-        UrlManager.checkUserData(this.routeParams);
 
-        const answers =  this.routeParams.answers;
-        this.chosenAnswers = answers ? answers.split(',').map(Number) : [];
-        this.correctAnswers = this.getCorrectAnswers(this.routeParams.id);
+        this.init()
 
-        // this.init()
+
+
     }
 
 
-        // async init(testId){
-        //
-        //     const userInfo = Auth.getUserInfo();
-        //     if(!userInfo){
-        //         location.href="#/";
-        //     }
-        //     const params = new URLSearchParams(window.location.search);
-        //     const id = params.get('id');
-        //         try {
-        //             const result = await CustomHttp.request(config.host + '/tests/' + testId + '/result/details?userId=' + userInfo.userId, 'POST')
-        //
-        //             if (result) {
-        //                 if (result.error) {
-        //                     throw new Error(result.error)
-        //                 }
-        //                 this.startQuiz();
-        //
-        //             }
-        //         } catch (error) {
-        //             console.log(error);
-        //         }
-        //
-        // }
+        async init(){
 
-        startQuiz(){
-            document.getElementById('pre-title').innerText = this.quiz.name;
+            const hash = window.location.hash;
+            const queryString = hash.split('?')[1];
+            const params = new URLSearchParams(queryString);
+            const testId = params.get('testId');
+
+            const chosenAnswersParam = params.get('chosenAnswers');
+            this.chosenAnswers = chosenAnswersParam
+              ? chosenAnswersParam.split(',').map(Number)
+              : [];
+
+            console.log(this.chosenAnswers)
+
+
+
+            if(!this.userInfo){
+                location.href="#/";
+            }
+
+
+            console.log('userinfo',  this.userInfo);
+
+            try {
+                const result = await CustomHttp.request(
+                  `${config.host}/tests/${testId}/result/details?userId=${ this.userInfo.userId}`,
+                  'GET'
+                );
+
+                    if (result) {
+                        if (result.error) {
+                            throw new Error(result.error)
+                        }
+                        this.quiz = result.test;
+
+                        if (this.quiz && this.quiz.questions) {
+                            this.quiz.questions.forEach(question => {
+                                question.answers.forEach(answer => {
+                                    if (answer.correct) {
+                                        this.correctAnswers.push(answer.id);
+                                    }
+                                });
+                            });
+                        }
+
+                        this.startQuiz(result);
+
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+
+        }
+
+        startQuiz(result){
+            document.getElementById('pre-title').innerText = result.test.name;
             this.questionTitleElement = document.getElementById('title')
             this.optionsElement = document.getElementById('options');
             const that = this;
             document.querySelector('.answer-user span').innerText =
-                `${this.routeParams.name} ${this.routeParams.lastName}, ${this.routeParams.email}`;
+                `${ this.userInfo.fullName}, ${ this.userInfo.email}`;
 
             this.showQuestion();
 
@@ -119,26 +145,5 @@ export class Answers  {
                 questionBlock.appendChild(optionsContainer);
                 container.appendChild(questionBlock);
             });
-        }
-
-        async getCorrectAnswers() {
-            const userInfo = Auth.getUserInfo();
-            if(!userInfo){
-                location.href="#/";
-            }
-            try{
-                const result = await CustomHttp.request(config.host + '/tests/' + this.testId + '/result/details?userId=' + userInfo.userId, 'GET')
-
-                if(result){
-                    if(result.error){
-                        throw new Error(result.error)
-                    }
-                    this.startQuiz();
-                    return
-                }
-            } catch (error){
-                console.log(error);
-            }
-
         }
     }
